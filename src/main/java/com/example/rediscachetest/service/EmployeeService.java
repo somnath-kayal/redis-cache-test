@@ -1,5 +1,6 @@
 package com.example.rediscachetest.service;
 
+import com.example.rediscachetest.exception.EmployeeNotFoundException;
 import com.example.rediscachetest.model.Employee;
 import com.example.rediscachetest.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,11 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public Employee find(int id){
-        return employeeRepository.findById(id).get();
+    public Employee find(int id) throws EmployeeNotFoundException {
+//        return employeeRepository.findById(id).get();
+        return employeeRepository.findById(id).orElseThrow(() -> {
+            return new EmployeeNotFoundException("Employee not found with id "+ id);
+        });
     }
 
     public void save(Employee e){
