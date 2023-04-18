@@ -1,5 +1,6 @@
 package com.example.rediscachetest.resource;
 
+import com.example.rediscachetest.exception.EmployeeNotFoundException;
 import com.example.rediscachetest.model.Employee;
 import com.example.rediscachetest.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -35,14 +37,14 @@ public class EmployeeController {
 
     @Cacheable(value = "employees", key = "#id")
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Employee get(@PathVariable("id") int id){
+    public Employee get(@PathVariable("id") int id) throws EmployeeNotFoundException {
         logger.info("Getting employee with id {}",id);
         return employeeService.find(id);
     }
 
     @CachePut(value = "employees", key = "#employee.id", condition = "#employee.salary > 15000")
     @PostMapping("/save")
-    public @ResponseBody ResponseEntity<String> save(@RequestBody Employee employee) {
+    public @ResponseBody ResponseEntity<String> save(@RequestBody @Valid Employee employee) {
         logger.info("Saving employee");
         employeeService.save(employee);
         return new ResponseEntity<String>("Saved Successfully", HttpStatus.OK);

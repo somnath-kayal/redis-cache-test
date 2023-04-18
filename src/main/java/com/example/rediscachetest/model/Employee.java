@@ -1,14 +1,19 @@
 package com.example.rediscachetest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "Employee")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Data
 public class Employee implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,41 +21,33 @@ public class Employee implements Serializable{
     private int id;
 
     @Column(name = "name")
+    @NotNull(message = "employee name can't be null")
+    @NotBlank
     private String name;
+
     @Column(name = "email")
+    @Email(message = "Employee email is required")
     private String email;
+
     @Column(name = "salary")
     private int salary;
 
-    public int getId() {
-        return id;
-    }
+    @Column(name = "age")
+    @Min(18)
+    @Max(60)
+    private int age;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @Column(name = "DOB")
+    @Past
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private LocalDate dateOfBirth;
 
-    public String getName() {
-        return name;
-    }
+    @NotNull
+//    @Pattern(regexp = "^\\d{10}$", message = "contact number not valid")
+    private int contact;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
+    @Min(0)
+    @Max(10)
+    @Column(name = "rating")
+    private int rating;
 }
