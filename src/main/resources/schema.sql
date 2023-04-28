@@ -4,9 +4,9 @@ CREATE TABLE EMPLOYEE (
   id INT AUTO_INCREMENT  PRIMARY KEY,
   name VARCHAR(250) NOT NULL,
   email VARCHAR(250) DEFAULT NULL,
-  salary INT NOT NULL,
-  age INT NOT NULL,
-  dob DATE NOT NULL,
+  salary INT,
+  age INT,
+  dob DATE,
   contact INT NOT NULL,
-  rating INT NOT NULL
+  rating INT
 );

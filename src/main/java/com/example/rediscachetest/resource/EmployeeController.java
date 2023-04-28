@@ -3,7 +3,6 @@ package com.example.rediscachetest.resource;
 import com.example.rediscachetest.exception.EmployeeNotFoundException;
 import com.example.rediscachetest.model.Employee;
 import com.example.rediscachetest.service.EmployeeService;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/employee")
-@Slf4j
 public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
@@ -100,5 +99,22 @@ public class EmployeeController {
     public Map<Integer,Employee> getAllEmployeesMap(){
         logger.info("Creating all employee map");
         return employeeService.getAllEmployeeMap();
+    }
+
+    @GetMapping(path = "/above-age/{age}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Employee> getEmployeesAboveAge(@PathVariable int age){
+        logger.info("Getting all employee above age {}", age);
+        return employeeService.getEmployeesAboveAge(age);
+    }
+
+    @GetMapping("/groupingBy-age/{age}")
+    public Map<Integer,List<Employee>> getEmployeeAboveAgeGroupBy(@PathVariable int age){
+        logger.info("Getting all employee above age {} by groupingBy age", age);
+        return employeeService.getEmployeesAboveAgeGroupBy(age);
+    }
+
+    @GetMapping("/high-rated/salary/{salary}")
+    public Map<Integer, Collection<Employee>> findHighRatedEmployees(@PathVariable int salary){
+        return employeeService.findHighRatedEmployees(salary);
     }
 }
