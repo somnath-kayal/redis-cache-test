@@ -34,10 +34,18 @@ public class EmployeeService {
         employeeRepository.save(e);
     }
 
-    public void updateSalary(int id, int salary){
-        Employee employee = employeeRepository.findById(id).get();
+    public Employee updateSalary(int id, int salary) {
+        // difference between orElse() and orElseGet() is that orElse() will always be executed if the
+        // Optional<T> is null or not, But orElseGet() will only be executed when Optional<T> is null.
+        Employee employee = employeeRepository.findById(id).orElseGet(() -> {
+            try {
+                return find(id);
+            } catch (EmployeeNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
         employee.setSalary(salary);
-        employeeRepository.save(employee);
+        return employeeRepository.save(employee);
     }
 
     public void delete(int id) {
@@ -70,7 +78,7 @@ public class EmployeeService {
                 Collectors.groupingBy(Employee::getAge));
     }
 
-    public Map<Integer, Collection<Employee>> findHighRatedEmployees(int salary){
+    public Map<Integer, Collection<Employee>> findHighRatedEmployeesBySalary(int salary){
         // get employees whose rating > 7 and group by rating and sort the values by salary for each group
         List<Employee> employees = employeeRepository.findBySalaryAndRating(salary, 5);
         logger.info("findHighRatedEmployees : {}", employees);
@@ -82,5 +90,16 @@ public class EmployeeService {
                                 Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Employee::getSalary, Comparator.reverseOrder())))
                         )
                 );
+    }
+
+    public Employee updateRating(int employeeId, int rating) throws EmployeeNotFoundException {
+        Employee e = find(employeeId);
+        e.setRating(rating);
+        return employeeRepository.save(e);
+
+    }
+
+    public List<Employee> findHighRatedEmployees(){
+        return employeeRepository.findByRatingGreaterThanEqual(7);
     }
 }

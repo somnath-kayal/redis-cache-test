@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "Employee")
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 public class Employee implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "employee_id")
     private int id;
 
     @Column(name = "name")
@@ -51,8 +53,10 @@ public class Employee implements Serializable{
 //    @Pattern(regexp = "^\\d{10}$", message = "contact number not valid")
     private int contact;
 
-    @Min(0)
-    @Max(10)
-    @Column(name = "rating")
-    private int rating;
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeIncentive> incentives;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ACCOUNT_DETAILS_ID", referencedColumnName = "id")
+    private EmployeeBankAccount bankAccount;
 }

@@ -7,3 +7,9 @@ INSERT INTO EMPLOYEE (name, email, salary, age, dob, contact, rating) VALUES
   ('Lui Gupta', 'abc@gmail.com', 10000, 20, '2001-08-10', 1234567890, 5),
   ('Dom Vu', 'xyz@email.com',28000, 21, '2012-05-15', 1234007890, 7),
   ('Anjan Dey', 'adey@email.com',25000, 21, '1995-10-02', 1234337890, 8);
+
+INSERT INTO EMPLOYEE_INCENTIVE (employee_id, amount, incentive_date) VALUES
+  (1, 5000, '20019-05-20'),
+  (3, 4000, '20019-08-20'),
+  (2, 6000, '20020-07-15'),
+  (1, 7000, '20022-05-20');

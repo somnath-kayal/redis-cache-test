@@ -51,10 +51,10 @@ public class EmployeeController {
 
     @CachePut(value = "employees", key = "#id")
     @GetMapping("/update/{id}")
-    public @ResponseBody ResponseEntity<String> updateSalary(@PathVariable("id") int id,@RequestParam int salary) {
+    public @ResponseBody ResponseEntity<Employee> updateSalary(@PathVariable("id") int id,@RequestParam int salary){
         logger.info("updating salary {} for employee {}",salary,id);
-        employeeService.updateSalary(id,salary);
-        return new ResponseEntity<String>("updated Successfully", HttpStatus.OK);
+        Employee e = employeeService.updateSalary(id,salary);
+        return new ResponseEntity<>(e, HttpStatus.OK);
     }
 
     @CacheEvict(value = "employees", key = "#id")
@@ -115,6 +115,6 @@ public class EmployeeController {
 
     @GetMapping("/high-rated/salary/{salary}")
     public Map<Integer, Collection<Employee>> findHighRatedEmployees(@PathVariable int salary){
-        return employeeService.findHighRatedEmployees(salary);
+        return employeeService.findHighRatedEmployeesBySalary(salary);
     }
 }

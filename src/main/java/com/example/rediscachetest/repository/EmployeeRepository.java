@@ -24,4 +24,6 @@ public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
 
     @Query("select e from Employee e where e.salary > :salary and e.rating > :rating")
     List<Employee> findBySalaryAndRating(@Param("salary") int salary, @Param("rating") int rating);
+
+    List<Employee> findByRatingGreaterThanEqual(int rating);
 }

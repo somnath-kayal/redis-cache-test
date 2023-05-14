@@ -4,9 +4,9 @@ import com.example.rediscachetest.model.Employee;
 import com.example.rediscachetest.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
@@ -16,6 +16,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTest {
 
     @Mock
@@ -24,11 +25,15 @@ public class EmployeeServiceTest {
     @InjectMocks
     EmployeeService toTest;
 
+    @Captor
+    ArgumentCaptor<Integer> highRatingCaptor;
+
     List<Employee> employeeList;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+//        initMocks() not required if we use @ExtendWith(MockitoExtension.class)
+//        MockitoAnnotations.initMocks(this);
         Employee e1 = new Employee();
         e1.setId(123);
         e1.setSalary(1000);
@@ -55,8 +60,12 @@ public class EmployeeServiceTest {
     @Test
     void findHighRatedEmployees(){
         doReturn(employeeList).when(employeeRepository).findBySalaryAndRating(anyInt(), anyInt());
-        Map<Integer, Collection<Employee>> ratingEmployeeGroupByMap = toTest.findHighRatedEmployees(500);
-        verify(employeeRepository).findBySalaryAndRating(eq(500), eq(5));
+        Map<Integer, Collection<Employee>> ratingEmployeeGroupByMap = toTest.findHighRatedEmployeesBySalary(500);
+
+        // two ways to check argument value - 1. ArgumentCaptor, 2. ArgumentMatcher(ex - eq())
+        // below example shows, code should pass 5 as a threshold for considering a rating as high, it can also be done by eq(5)
+        verify(employeeRepository).findBySalaryAndRating(eq(500), highRatingCaptor.capture());
         assertEquals(2, ratingEmployeeGroupByMap.size());
+        assertEquals(5, highRatingCaptor.getValue());
     }
 }
